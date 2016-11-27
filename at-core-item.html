@@ -1,0 +1,183 @@
+<!--
+Copyright (c) 2014-2016 adenin TECHNOLOGIES. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+-->
+
+<link rel="import" href="../tangere/tangere.html">
+<link rel="import" href="../at-theme/at-theme.html">
+<link rel="import" href="../at-core-style-classes/at-core-style-classes.html">
+
+<dom-module id="at-core-item">
+  <template>
+    <style include="at-core-style-classes"></style>
+
+    <style>
+        :host {
+          width: 100%;
+          display: block;
+        }
+
+    </style>
+
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'at-core-item',
+    properties: {
+      value: {
+        type: Object
+      },
+      itemComponent: {
+        type: String,
+        value: "",
+        notify: true
+      },
+      view: {
+        type: String,
+        value: "",
+        notify: true,
+        xtype: "code",
+        mode: "liquid"
+      },      
+      _initialize: {
+        type: String,
+        value: "",
+        notify: true
+      }
+    },
+
+    observers: [
+      'initialize(value,itemComponent, view)'
+    ],
+
+    $meta: [{
+      title: "Item",
+      type: "element",
+      xtype: "at-core-item",
+      invisible: true
+    }],
+
+    actionListener: function (event) {
+
+      // if (!!event.detail.parameter.items) this.items = event.detail.parameter.items;
+
+    },
+
+    initialize: function () {
+      
+      if (!this.value || (!this.view && !this.itemComponent)) {
+        return;
+      }
+
+      // dynamically load item-component
+      if (!!this.itemComponent || !!this.view) {
+        
+        // expand relative name with name prefix
+        var elName = this.itemComponent;
+        if (elName.indexOf(".card") > 0) {        
+          var elNameOrg = elName;
+          var resolve = { namePrefix: "" };
+
+          this.fire("resolve-name-prefix", resolve);
+          var prefix = resolve.namePrefix;
+
+          if (elName == "default.view") elName = "";
+          elName = elName.replace("default.", "");
+
+          elName = prefix + "/" + prefix + (elName ? ("-" + elName.replace(".", "-")) : "");
+
+          this.itemComponent = elName;
+        }
+
+        // load item-component from other component (itemComponent = component-name/item-component) or from localfolder (item-component)
+        var compUrl = document.baseURI.toLowerCase().indexOf("/components/") >= 0 ? "../" : "/components/";
+        if (document.URL.indexOf("/elements/designer-element/") >= 0) compUrl = "/components/"; // standalone designer preview?
+
+        if (window.ComponentsBase != undefined) compUrl = window.ComponentsBase;
+
+        var compName = this.itemComponent ? this.itemComponent : "at-core-view/at-core-view";
+        var importPath = compName.indexOf("/") >= 0 ? compUrl + compName + ".html" : compName + ".html";
+
+        this.importHref(importPath, function () {
+          this._bindItem();
+        }, function () {
+          Polymer.signal("busy-end");
+          var restart = confirm(window.location.href + "\n\nERROR: failed to load list item " + this.itemComponent);
+
+          if (restart) {
+            location.hash = ""; // clear current hash
+            location.reload(); // go to start app by reloading without hash
+          }
+        });
+
+
+      } else {
+        // with inline template binding can happen immediately
+        this._bindItem();
+      }
+    },
+
+    _bindItem: function () {
+
+      if (!this.value || (!this.view && !this.itemComponent)) {
+        return;
+      }
+
+      var itemWrapper = Polymer.dom(this.root).querySelector("#item");
+
+      if (!itemWrapper) {
+        // create new listWrapper
+        itemWrapper = document.createElement("div");
+        itemWrapper.id = "item";
+        Polymer.dom(this.root).appendChild(itemWrapper);
+      } else {
+        // empty existing wrapper
+        while (itemWrapper.hasChildNodes()) {
+          itemWrapper.removeChild(itemWrapper.lastChild);
+        }
+      }
+
+      Polymer.dom.flush();
+
+      var comp = this.itemComponent;
+      if (comp.indexOf("/") > 0) {
+        comp = comp.substring(1 + comp.indexOf("/"));
+      }
+
+      var item = null;
+
+      // create component element
+      var comp = this.itemComponent ? this.itemComponent : "at-core-view";
+      if (comp.indexOf("/") > 0) {
+        comp = comp.substring(1 + comp.indexOf("/"));
+      }
+
+      var item = document.createElement(comp);
+      var value = this.value;
+      value._session = Tangere.session;
+
+      if (!this.itemComponent) {
+        item.view = this.view;
+        item.value = value;
+      } else {
+        if (typeof item.model == "object") {
+          item.model = value;
+        } else {
+          item.item = value;
+        }
+      }
+
+      //append list container to shadow dom
+      Polymer.dom(itemWrapper).appendChild(item);
+      Polymer.dom.flush();
+    },
+
+    ready: function () {
+
+ 
+
+    }
+  });
+</script>

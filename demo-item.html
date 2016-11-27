@@ -1,0 +1,81 @@
+<link rel="import" href="../at-core-view/at-core-view.html">
+<link rel="import" href="../at-carbon-clamp/at-carbon-clamp.html">
+<link rel="import" href="../at-carbon-moment/at-carbon-moment.html">
+
+<dom-module id="demo-item">
+
+  <template>
+
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;      
+        height: 120px;
+      }
+
+      .card {
+        cursor: pointer;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      .containerx:active {
+        background-color: var(--at-active-background-color);
+        transition: all 0.1s ease;
+      }
+
+      .active {
+        background-color: var(--at-active-background-color);       
+        display: block;
+      }
+
+      .item {
+        @apply(--layout-horizontal);
+        color: var(--primary-text-color);       
+        height: 72px;
+      }
+
+      .title {
+        opacity: var(--at-secondary-opacity);
+        color: var(--primary-text-color);
+        @apply(--paper-font-caption);
+        @apply(--layout-flex);
+      }
+
+      .content {
+        @apply(--layout-flex);
+        @apply(--layout-center-center);
+        min-width: 0;
+      }
+
+    </style>
+
+    <at-core-view model="{{item}}" id="liquid_template" class="unselectable">
+      <template preserve-content>
+        <a href="{{link}}" on-click="ignoreEvent" on-tap="handleLink">
+          <div class="container">
+            <div class="item">
+              <div class="content">
+                <at-carbon-clamp lines="2">{{title}}</at-carbon-clamp>
+                <div class="title">{{description}}</div>
+                <at-carbon-moment class="title" datetime="{{date}}" utc from-now auto-refresh-rate="10"></at-carbon-moment>
+              </div>              
+            </div>
+          </div>
+        </a>
+      </template>
+    </at-core-view>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'demo-item',
+    behaviors: [Tangere.behavior.handleLink],
+    properties: {
+      item: Object
+    }
+  });
+</script>

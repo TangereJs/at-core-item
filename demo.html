@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+  <title>at-core-view demo</title>  
+  <meta name="viewport" content="width=device-width">
+  <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../tangere/tangere.html">
+  <link rel="import" href="../at-core-style-classes/at-core-style-classes.html">
+  
+  <link rel="import" href="at-core-item.html">  
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <at-core-item id="demo" item-component="at-core-item/demo-item"></at-core-item> 
+  <at-core-item id="demoview"></at-core-item> 
+
+   <script>
+      document.addEventListener('WebComponentsReady', function(event) {
+        var demo = document.getElementById("demo");
+        var demoview = document.getElementById("demoview");
+        
+        var value = { 
+          title:"My title",
+          description:"a long description"
+        };
+        
+        demo.value = value;
+        
+        demoview.value = value;        
+        demoview.view = (function () {
+          /*  
+              <a href="{{link}}" on-click="ignoreEvent" on-tap="handleLink">
+                <div class="container">
+                  <div class="item">
+                    <div class="content">
+                      <at-carbon-clamp lines="2">{{title}}</at-carbon-clamp>
+                      <div class="title">{{description}}</div>
+                      <at-carbon-moment class="title" datetime="{{date}}" utc from-now auto-refresh-rate="10"></at-carbon-moment>
+                    </div>              
+                  </div>
+                </div>
+              </a>
+          */
+        }).toString().match(/[^]*\/\*([^]*)\*/)[1]; // convert comment to multiline string  
+
+      });
+  </script>
+</body>
+</html>
