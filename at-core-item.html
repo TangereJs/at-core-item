@@ -118,7 +118,16 @@ This code may only be used under the BSD style license found at http://polymer.g
         this._bindItem();
       }
     },
+    clear: function() {
+      var itemWrapper = Polymer.dom(this.root).querySelector("#item");
 
+      // empty existing wrapper
+      if (itemWrapper) {
+        while (itemWrapper.hasChildNodes()) {
+          itemWrapper.removeChild(itemWrapper.lastChild);
+        }
+      }
+    },
     _bindItem: function () {
 
       if (!this.value || (!this.view && !this.itemComponent)) {
