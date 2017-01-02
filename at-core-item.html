@@ -1,6 +1,5 @@
 <!--
-Copyright (c) 2014-2016 adenin TECHNOLOGIES. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+Copyright (c) 2014-2017 adenin TECHNOLOGIES. All rights reserved.
 -->
 
 <link rel="import" href="../tangere/tangere.html">
@@ -18,7 +17,7 @@ This code may only be used under the BSD style license found at http://polymer.g
         }
 
     </style>
-
+    <div id="item"></div>
   </template>
 </dom-module>
 
@@ -110,8 +109,7 @@ This code may only be used under the BSD style license found at http://polymer.g
             location.hash = ""; // clear current hash
             location.reload(); // go to start app by reloading without hash
           }
-        });
-
+        }, true);
 
       } else {
         // with inline template binding can happen immediately
@@ -119,13 +117,11 @@ This code may only be used under the BSD style license found at http://polymer.g
       }
     },
     clear: function() {
-      var itemWrapper = Polymer.dom(this.root).querySelector("#item");
+      var itemWrapper = this.$.item;
 
       // empty existing wrapper
       if (itemWrapper) {
-        while (itemWrapper.hasChildNodes()) {
-          itemWrapper.removeChild(itemWrapper.lastChild);
-        }
+        Polymer.dom(itemWrapper).innerHTML = "";
       }
     },
     _bindItem: function () {
@@ -134,20 +130,9 @@ This code may only be used under the BSD style license found at http://polymer.g
         return;
       }
 
-      var itemWrapper = Polymer.dom(this.root).querySelector("#item");
+      var itemWrapper = this.$.item;
 
-      if (!itemWrapper) {
-        // create new listWrapper
-        itemWrapper = document.createElement("div");
-        itemWrapper.id = "item";
-        Polymer.dom(this.root).appendChild(itemWrapper);
-      } else {
-        // empty existing wrapper
-        while (itemWrapper.hasChildNodes()) {
-          itemWrapper.removeChild(itemWrapper.lastChild);
-        }
-      }
-
+      Polymer.dom(itemWrapper).innerHTML = "";
       Polymer.dom.flush();
 
       var comp = this.itemComponent;
