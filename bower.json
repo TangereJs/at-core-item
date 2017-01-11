@@ -3,6 +3,11 @@
   "version": "0.0.1.52",
   "private": true,
   "dependencies": {
-    "polymer": "Polymer/polymer#master"
+    "tangere": "TangereJs/tangere#0.8-preview",
+    "at-theme": "TangereJs/at-theme#0.8-preview",
+    "at-core-style-classes": "TangereJs/at-core-style-classes#0.8-preview",
+    "at-core-view": "TangereJs/at-core-view#0.8-preview",
+    "at-carbon-clamp": "TangereJs/at-carbon-clamp#0.8-preview",
+    "at-carbon-moment": "TangereJs/at-carbon-moment#0.8-preview"
   }
 }
